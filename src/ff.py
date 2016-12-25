@@ -2,6 +2,7 @@ import math
 import os
 import pkgutil
 import stat
+import sys
 import tempfile
 
 from subprocess import Popen, PIPE, CalledProcessError
@@ -14,8 +15,13 @@ class FF:
     def __init__(self):
         # Setup binaries
 
-        self.ffprobe = self._gen_ffbinary("ffprobe-linux")
-        self.ffmpeg = self._gen_ffbinary("ffmpeg-linux")
+        _os = sys.platform
+
+        if _os.startswith("linux"):
+            _os = "linux" # change linux2, etc. to just linux
+
+        self.ffprobe = self._gen_ffbinary("ffprobe-" + _os)
+        self.ffmpeg = self._gen_ffbinary("ffmpeg-" + _os)
 
         self.process = None
         self.thread = None
