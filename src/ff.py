@@ -1,22 +1,42 @@
 import math
+import os
+import pkgutil
+import stat
+import tempfile
+
 from subprocess import Popen, PIPE, CalledProcessError
 from threading import Thread
 
+import bin
 
 class FF:
 
     def __init__(self):
-        # Find binaries
-        self.ffprobe = "ffprobe"
-        self.ffmpeg = "ffmpeg"
+        # Setup binaries
+
+        self.ffprobe = self._gen_ffbinary("ffprobe-linux")
+        self.ffmpeg = self._gen_ffbinary("ffmpeg-linux")
 
         self.process = None
         self.thread = None
 
 
+    def _gen_ffbinary(self, ffname):
+        bin_data = pkgutil.get_data("bin", ffname)
+
+        temp = tempfile.NamedTemporaryFile(delete=False)
+        temp.write(bin_data)
+        temp.close()
+
+        # chmod +x
+        os.chmod(temp.name, os.stat(temp.name).st_mode | stat.S_IEXEC)
+
+        return temp
+
+
     def get_duration(self, filename):
         p = Popen([
-            self.ffprobe,
+            self.ffprobe.name,
             "-v", "error", "-show_entries", "format=duration",
             "-of", "default=noprint_wrappers=1:nokey=1",
             filename
@@ -73,7 +93,7 @@ class FF:
             slice_time = ["-t", str(slice_timestamps[1])]
 
 
-        cmd = [self.ffmpeg] + \
+        cmd = [self.ffmpeg.name] + \
                 slice_start + ["-y", "-i", input_file] + slice_time + \
                 output_codecs.args + [output_file]
 
@@ -89,6 +109,21 @@ class FF:
         if self.process:
             self.process.terminate()
             self.process = None
+
+
+    def _try_rm(self, filename):
+        try:
+            os.remove(filename)
+        except:
+            pass
+
+
+    def cleanup(self):
+        ''' Delete temporary files '''
+        print("Cleaning up")
+
+        self._try_rm(self.ffprobe.name)
+        self._try_rm(self.ffmpeg.name)
 
 
 

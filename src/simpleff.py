@@ -1,3 +1,4 @@
+import atexit
 import functools
 import os
 import signal
@@ -21,7 +22,7 @@ from PyQt5.QtWidgets import (
         QWidget,
         )
 
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
 from PyQt5.QtGui import QIcon
 
 # Local imports
@@ -51,6 +52,12 @@ class App(QMainWindow):
         self.setCentralWidget(self.table_widget)
 
         self.show()
+
+    def closeEvent(self, event):
+        # First terminate running processes
+        FF.terminate()
+
+        event.accept()
 
 
 class FilePickerWidget(QWidget):
@@ -436,10 +443,25 @@ class TabWidget(QWidget):
 
 
 
-if __name__ == "__main__":
-    # Allow Ctrl-C to exit
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
+def on_sigint(*args):
+    FF.cleanup()
+    QApplication.quit()
 
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    ex = App()
+
+    # Interpreter thread every half second
+    timer = QTimer()
+    timer.start(500)
+    timer.timeout.connect(lambda: None)
+
+    # Allow Ctrl-C to exit
+    signal.signal(signal.SIGINT, on_sigint)
+
+    # Cleanup temp files on exit
+    atexit.register(FF.cleanup)
+
+    # Run
+    main_app = App()
     sys.exit(app.exec_())
