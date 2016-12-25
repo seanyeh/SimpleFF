@@ -3,6 +3,8 @@
 import sys
 
 _os = sys.platform
+if _os == "win32":
+    _os += ".exe"
 if _os.startswith("linux"):
     _os = "linux"
 

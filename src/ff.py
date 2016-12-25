@@ -17,6 +17,8 @@ class FF:
 
         _os = sys.platform
 
+        if _os == "win32":
+            _os += ".exe"
         if _os.startswith("linux"):
             _os = "linux" # change linux2, etc. to just linux
 
