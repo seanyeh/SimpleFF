@@ -21,11 +21,7 @@ class OutputCodec:
     def __init__(self, name, ext, args):
         self.name = name
         self.ext = ext
-
-        if sys.platform == 'win32':
-            self.args = [args]
-        else:
-            self.args = shlex.split(args)
+        self.args = shlex.split(args)
 
 
 
