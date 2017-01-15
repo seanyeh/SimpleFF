@@ -1,0 +1,3 @@
+[submodule "src/bin"]
+	path = src/bin
+	url = https://github.com/seanyeh/SimpleFF-binaries
