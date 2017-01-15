@@ -87,6 +87,7 @@ class FilePickerWidget(QWidget):
 
         # Setup GUI
         self.layout = QHBoxLayout(self)
+        self.layout.setContentsMargins(10, 0, 10, 10)
 
         if is_input:
             self.file_button = QPushButton("Choose file")
@@ -198,6 +199,7 @@ class CodecsWidget(QWidget):
         super(QWidget, self).__init__(parent)
         self.parent = parent
         self.layout = QHBoxLayout(self)
+        self.layout.setContentsMargins(10, 0, 10, 10)
 
         self.combo = QComboBox()
         for codec_obj in AVAILABLE_CODECS:
@@ -230,6 +232,8 @@ class SliceWidget(QWidget):
 
         # Setup GUI
         self.layout = QVBoxLayout(self)
+        self.layout.setContentsMargins(10, 0, 10, 10)
+
 
         self.hlayout = QWidget()
 
