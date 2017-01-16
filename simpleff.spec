@@ -1,10 +1,14 @@
 # -*- mode: python -*-
 
-import sys
+import os, sys
+
+pathex = ["."]
 
 _os = sys.platform
 if _os == "win32":
     _os += ".exe"
+    qtdir = "Programs\\Python\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin"
+    pathex.append(os.path.join(os.getenv("LOCALAPPDATA"), qtdir))
 if _os.startswith("linux"):
     _os = "linux"
 
@@ -16,7 +20,7 @@ datas = [
 ]
 
 a = Analysis(['src/simpleff.py'],
-             pathex=['.'],
+             pathex=pathex,
              binaries=datas,
              datas=None,
              hiddenimports=[],
