@@ -4,6 +4,8 @@ A simple cross-platform (Windows, OS X, Linux/Unix) frontend to FFmpeg for easy 
 
 The aim of SimpleFF is to make it super easy for everyone to perform the common video converting tasks.
 
+![Screenshot](img/screen.png)
+
 
 ### Features
 
